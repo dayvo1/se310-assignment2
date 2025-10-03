@@ -1,5 +1,12 @@
-package com.se310.store;
+package com.se310.store.model;
 
+/**
+ * StoreException class implementation designed display errors to the user while
+ *
+ * @author  Sergey L. Sundukovskiy
+ * @version 1.0
+ * @since   2025-09-25
+ */
 public class StoreException extends Exception{
     private String action;
     private String reason;

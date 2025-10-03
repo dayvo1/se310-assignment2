@@ -1,4 +1,4 @@
-package com.se310.store;
+package com.se310.store.model;
 
 import com.se310.store.singleton.StoreService;
 
@@ -12,6 +12,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * CommandProcessor class implementation for processing DSL commands
+ *
+ * @author  Sergey L. Sundukovskiy
+ * @version 1.0
+ * @since   2025-09-25
+ */
 public class CommandProcessor implements CommandAPI  {
 
     StoreService storeService = new StoreService();

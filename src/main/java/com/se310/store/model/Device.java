@@ -1,7 +1,14 @@
-package com.se310.store;
+package com.se310.store.model;
+
+import com.se310.store.observer.Observable;
+import com.se310.store.observer.Observer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Abstract class representing Device in the Store
+ * Implements Observable to allow observers to monitor device state changes
  *
  * @author  Sergey L. Sundukovskiy
  * @version 1.0
@@ -9,10 +16,17 @@ package com.se310.store;
  */
 public abstract class Device {
 
+    //TODO: Implement Observable interface
+    //TODO: Implement Observer storage
+    //TODO: Implement Observer registration
+    //TODO: Implement Observer removal
+    //TODO: Implement Observer notification
+
     private String id;
     private String name;
     private StoreLocation storeLocation;
     private String type;
+    private final List<Observer> observers;
 
     /**
      * Constructor for the Device class
@@ -26,6 +40,7 @@ public abstract class Device {
         this.name = name;
         this.storeLocation = storeLocation;
         this.type = type;
+        this.observers = new ArrayList<>();
     }
 
     /**

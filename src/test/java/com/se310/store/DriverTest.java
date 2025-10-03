@@ -1,5 +1,6 @@
 package com.se310.store;
 
+import com.se310.store.model.CommandProcessor;
 import org.junit.jupiter.api.Test;
 
 import java.net.URISyntaxException;

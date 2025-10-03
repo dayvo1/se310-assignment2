@@ -3,11 +3,11 @@ package com.se310.store.singleton;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.se310.store.*;
+import com.se310.store.model.*;
 
 /**
- * This is the main service of the system implementing Command API for processing CLI commands and
- * ModelService API for processing Store events
+ * This is the main service of the system implementing ommand API for processing CLI commands and
+ * rvice API for processing Store events
  *
  * @author  Sergey L. Sundukovskiy
  * @version 1.0
@@ -459,7 +459,7 @@ public class StoreService {
                 }
                 for (ApplianceType appliance : ApplianceType.values()) {
                     if (appliance.name().equals(deviceType)){
-                        device = new Appliance (deviceId, name, storeLocation, deviceType);
+                        device = new Appliance(deviceId, name, storeLocation, deviceType);
                     }
                 }
 

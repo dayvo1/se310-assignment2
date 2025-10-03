@@ -1,4 +1,4 @@
-package com.se310.store;
+package com.se310.store.model;
 
 /**
  * CommandException class implementation designed display errors to the user while

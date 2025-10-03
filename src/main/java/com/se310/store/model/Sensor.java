@@ -1,4 +1,4 @@
-package com.se310.store;
+package com.se310.store.model;
 
 /**
  * Sensor class implementation representing Sensor Device in the Store
@@ -8,6 +8,8 @@ package com.se310.store;
  * @since   2025-09-25
  */
 public class Sensor extends Device{
+
+    //TODO: Implement Observer notification
 
     /**
      * Constructor for Sensor class
@@ -23,6 +25,7 @@ public class Sensor extends Device{
     @Override
     /**
      * Sensor specific event processing
+     * Notifies observers when an event is processed
      */
     public void processEvent(String event) {
         System.out.println("<<< " + "Processing Event : " + event);

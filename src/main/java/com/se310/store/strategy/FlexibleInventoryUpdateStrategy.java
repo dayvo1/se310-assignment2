@@ -1,8 +1,5 @@
 package com.se310.store.strategy;
 
-import com.se310.store.Inventory;
-import com.se310.store.StoreException;
-
 /**
  * Flexible implementation of the Inventory
  * This strategy allows temporary over-capacity for inventory updates

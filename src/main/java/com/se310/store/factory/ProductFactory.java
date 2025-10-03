@@ -1,8 +1,5 @@
 package com.se310.store.factory;
 
-import com.se310.store.Product;
-import com.se310.store.Temperature;
-
 /**
  * Factory Pattern implementation for creating Product objects
  *

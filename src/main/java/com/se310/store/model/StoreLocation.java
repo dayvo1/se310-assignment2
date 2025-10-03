@@ -1,4 +1,4 @@
-package com.se310.store;
+package com.se310.store.model;
 
 /**
  * Store Location class implementation consisting of Store id and the Aisle id

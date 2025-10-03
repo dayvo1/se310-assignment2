@@ -1,10 +1,5 @@
 package com.se310.store.facade;
 
-import com.se310.store.*;
-import com.se310.store.factory.CustomerFactory;
-import com.se310.store.factory.ProductFactory;
-import com.se310.store.singleton.StoreService;
-
 /**
  * Facade Pattern implementation for the store subsystem
  *

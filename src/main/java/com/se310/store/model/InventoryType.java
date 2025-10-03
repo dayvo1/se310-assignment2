@@ -1,4 +1,4 @@
-package com.se310.store;
+package com.se310.store.model;
 
 /**
  * Enum representing the types of inventory in the store

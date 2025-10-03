@@ -1,4 +1,4 @@
-package com.se310.store;
+package com.se310.store.model;
 
 public class InventoryLocation extends StoreLocation {
 

@@ -1,8 +1,5 @@
 package com.se310.store.strategy;
 
-import com.se310.store.Inventory;
-import com.se310.store.StoreException;
-
 /**
  * Standard implementation of the Inventory
  * This strategy performs a standard inventory update, checking bounds before updating

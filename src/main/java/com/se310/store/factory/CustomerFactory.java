@@ -1,8 +1,5 @@
 package com.se310.store.factory;
 
-import com.se310.store.Customer;
-import com.se310.store.CustomerType;
-
 /**
  * Factory Pattern implementation for creating Customer objects
  *

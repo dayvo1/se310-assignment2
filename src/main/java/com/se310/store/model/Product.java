@@ -1,4 +1,4 @@
-package com.se310.store;
+package com.se310.store.model;
 
 /**
  * Product class implementation representing products in the Stores associated with Inventory items
