@@ -1,7 +1,5 @@
 package com.se310.store.model;
 
-import com.se310.store.singleton.StoreService;
-
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -12,6 +10,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.se310.store.proxy.StoreServiceProxy;
+
 /**
  * CommandProcessor class implementation for processing DSL commands
  *
@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
  */
 public class CommandProcessor implements CommandAPI  {
 
-    StoreService storeService = new StoreService();
+    StoreServiceProxy storeService = new StoreServiceProxy("key123");
 
     public void processCommand(String commandBefore) throws CommandException, StoreException {
 
