@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.se310.store.proxy.StoreServiceProxy;
+import com.se310.store.facade.StoreFacade;
 
 /**
  * CommandProcessor class implementation for processing DSL commands
@@ -21,7 +21,7 @@ import com.se310.store.proxy.StoreServiceProxy;
  */
 public class CommandProcessor implements CommandAPI  {
 
-    StoreServiceProxy storeService = new StoreServiceProxy("key123");
+    StoreFacade storeService = new StoreFacade("key123");
 
     public void processCommand(String commandBefore) throws CommandException, StoreException {
 
@@ -36,40 +36,40 @@ public class CommandProcessor implements CommandAPI  {
         String command = commandBefore.trim().replaceAll(" +", " ");
 
         if (command.toLowerCase().contains("define store")){
-            storeService.provisionStore(tokens.get(2), tokens.get(4), tokens.get(6), null);
+            storeService.provisionStore(tokens.get(2), tokens.get(4), tokens.get(6));
         } else if(command.toLowerCase().contains("show store")){
-            System.out.println("<<< " + storeService.showStore(tokens.get(2),null));
+            System.out.println("<<< " + storeService.showStore(tokens.get(2)));
         } else if(command.toLowerCase().contains("define aisle")){
 
             String[] location = tokens.get(2).split(":");
             storeService.provisionAisle(location[0],location[1], tokens.get(4), tokens.get(6),
-                    AisleLocation.valueOf(tokens.get(8)),null);
+                    AisleLocation.valueOf(tokens.get(8)));
 
         } else if(command.toLowerCase().contains("show aisle")){
 
             String[] location = tokens.get(2).split(":");
-            System.out.println("<<< " + storeService.showAisle(location[0],location[1],null));
+            System.out.println("<<< " + storeService.showAisle(location[0],location[1]));
 
         } else if(command.toLowerCase().contains("define shelf")) {
 
             String[] location = tokens.get(2).split(":");
             storeService.provisionShelf(location[0],location[1],location[2], tokens.get(4), ShelfLevel.valueOf(tokens.get(6)),
-                    tokens.get(8), Temperature.valueOf(tokens.get(10)), null  );
+                    tokens.get(8), Temperature.valueOf(tokens.get(10)));
 
         } else if(command.toLowerCase().contains("show shelf")){
 
             String[] location = tokens.get(2).split(":");
-            System.out.println ("<<< " + storeService.showShelf(location[0], location[1], location[2], null));
+            System.out.println ("<<< " + storeService.showShelf(location[0], location[1], location[2]));
 
         } else if(command.toLowerCase().contains("define product")) {
 
             storeService.provisionProduct(tokens.get(2), tokens.get(4), tokens.get(6),
                     tokens.get(8), tokens.get(10), Double.parseDouble(tokens.get(12)),
-                    Temperature.valueOf(tokens.get(14)),null);
+                    Temperature.valueOf(tokens.get(14)));
 
         } else if(command.toLowerCase().contains("show product")) {
 
-            Product product = storeService.showProduct(tokens.get(2), null);
+            Product product = storeService.showProduct(tokens.get(2));
             System.out.println("<<< " + product);
 
         } else if(command.toLowerCase().contains("define inventory")) {
@@ -78,89 +78,89 @@ public class CommandProcessor implements CommandAPI  {
 
             storeService.provisionInventory(tokens.get(2), location[0], location[1],
                     location[2], Integer.parseInt(tokens.get(6)), Integer.parseInt(tokens.get(8)),
-                    tokens.get(12), InventoryType.valueOf(tokens.get(10)), null);
+                    tokens.get(12), InventoryType.valueOf(tokens.get(10)));
 
         } else if(command.toLowerCase().contains("show inventory")) {
 
-            System.out.println("<<< " + storeService.showInventory(tokens.get(2), null));
+            System.out.println("<<< " + storeService.showInventory(tokens.get(2)));
 
         } else if(command.toLowerCase().contains("update inventory")) {
 
-            Inventory inventory = storeService.updateInventory(tokens.get(2),Integer.parseInt(tokens.get(4)), null );
+            Inventory inventory = storeService.updateInventory(tokens.get(2),Integer.parseInt(tokens.get(4)));
             System.out.println(inventory);
 
         } else if(command.toLowerCase().contains("define customer")){
 
             storeService.provisionCustomer(tokens.get(2), tokens.get(4), tokens.get(6),
-                    CustomerType.valueOf(tokens.get(8)), tokens.get(10), tokens.get(12), null);
+                    CustomerType.valueOf(tokens.get(8)), tokens.get(10), tokens.get(12));
 
         } else if(command.toLowerCase().contains("update customer")){
 
             String[] location = tokens.get(4).split(":");
-            Customer customer = storeService.updateCustomer(tokens.get(2), location[0], location[1], null);
+            Customer customer = storeService.updateCustomer(tokens.get(2), location[0], location[1]);
 
             System.out.println("<<< " + customer);
 
         } else if(command.toLowerCase().contains("show customer")){
 
-            System.out.println(storeService.showCustomer(tokens.get(2),null));
+            System.out.println(storeService.showCustomer(tokens.get(2)));
 
         } else if(command.toLowerCase().contains("define basket")){
 
-            storeService.provisionBasket(tokens.get(2), null);
+            storeService.provisionBasket(tokens.get(2));
 
         } else if(command.toLowerCase().contains("assign basket")){
 
-            storeService.assignCustomerBasket(tokens.get(4), tokens.get(2), null);
+            storeService.assignCustomerBasket(tokens.get(4), tokens.get(2));
 
         } else if(command.toLowerCase().contains("get_customer_basket")){
 
-            Basket basket = storeService.getCustomerBasket(tokens.get(1), null);
+            Basket basket = storeService.getCustomerBasket(tokens.get(1));
             System.out.println("<<< " + basket);
 
         } else if (command.toLowerCase().contains("add_basket_item")){
 
             Basket basket = storeService.addBasketProduct(tokens.get(1), tokens.get(3),
-                    Integer.parseInt(tokens.get(5)), null);
+                    Integer.parseInt(tokens.get(5)));
             System.out.println("<<< " + basket);
 
         } else if (command.toLowerCase().contains("remove_basket_item")) {
 
             Basket basket = storeService.removeBasketProduct(tokens.get(1), tokens.get(3),
-                    Integer.parseInt(tokens.get(5)), null);
+                    Integer.parseInt(tokens.get(5)));
             System.out.println(basket);
 
         } else if (command.toLowerCase().contains("clear_basket")){
 
-            Basket basket = storeService.clearBasket(tokens.get(1),null);
+            Basket basket = storeService.clearBasket(tokens.get(1));
             System.out.println("<<< " + basket);
 
         } else if (command.toLowerCase().contains("show basket_items")){
 
-            Basket basket = storeService.showBasket(tokens.get(2),null);
+            Basket basket = storeService.showBasket(tokens.get(2));
             System.out.println("<<< " + basket);
 
         } else if (command.toLowerCase().contains("define device")){
 
             String[] location = tokens.get(8).split(":");
             storeService.provisionDevice(tokens.get(2), tokens.get(4),
-                    tokens.get(6), location[0], location[1], null);
+                    tokens.get(6), location[0], location[1]);
 
         } else if (command.toLowerCase().contains("show device")){
 
-            System.out.println("<<< " + storeService.showDevice(tokens.get(2),null));
+            System.out.println("<<< " + storeService.showDevice(tokens.get(2)));
 
         } else if (command.toLowerCase().contains("create event")){
 
-            storeService.raiseEvent(tokens.get(2), tokens.get(4) + " " + tokens.get(5),null);
+            storeService.raiseEvent(tokens.get(2), tokens.get(4) + " " + tokens.get(5));
 
         } else if (command.toLowerCase().contains("create_event")){
 
-            storeService.raiseEvent(tokens.get(1), tokens.get(3) + " " + tokens.get(4) + " " + tokens.get(5),null);
+            storeService.raiseEvent(tokens.get(1), tokens.get(3) + " " + tokens.get(4) + " " + tokens.get(5));
 
         } else if (command.toLowerCase().contains("create command")){
 
-            storeService.issueCommand(tokens.get(2), tokens.get(4) + " " + tokens.get(5),null);
+            storeService.issueCommand(tokens.get(2), tokens.get(4) + " " + tokens.get(5));
 
         } else {
             throw new CommandException(command, "Unrecognized Command");
