@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StoreServiceProxy.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">assignment2</a> &gt; <a href="index.source.html" class="el_package">com.se310.store.proxy</a> &gt; <span class="el_source">StoreServiceProxy.java</span></div><h1>StoreServiceProxy.java</h1><pre class="source lang-java linenums">package com.se310.store.proxy;
+
+import com.se310.store.model.Aisle;
+import com.se310.store.model.AisleLocation;
+import com.se310.store.model.Basket;
+import com.se310.store.model.Customer;
+import com.se310.store.model.CustomerType;
+import com.se310.store.model.Device;
+import com.se310.store.model.Inventory;
+import com.se310.store.model.InventoryType;
+import com.se310.store.model.Product;
+import com.se310.store.model.Shelf;
+import com.se310.store.model.ShelfLevel;
+import com.se310.store.model.Store;
+import com.se310.store.model.StoreException;
+import com.se310.store.model.Temperature;
+import com.se310.store.singleton.RealStoreService;
+
+/**
+ * Proxy Pattern implementation for the StoreService
+ * The Proxy Pattern provides a surrogate or placeholder for another object to control access to it
+ * This implementation adds access control before delegating to the real StoreService
+ *
+ * @author  Sergey L. Sundukovskiy
+ * @version 1.0
+ * @since   2025-09-25
+ */
+public class StoreServiceProxy implements StoreService{
+
+    private RealStoreService store;
+    private String token;
+
+<span class="fc" id="L33">    public StoreServiceProxy(String token){</span>
+<span class="fc" id="L34">        this.token = token;</span>
+<span class="fc" id="L35">        this.store = RealStoreService.getInstance();</span>
+<span class="fc" id="L36">    }</span>
+
+    public void authenticate(String token) throws StoreException{
+<span class="pc bpc" id="L39" title="2 of 4 branches missed.">        if(!((&quot;key123&quot;).equals(token)) || token == null){</span>
+<span class="nc" id="L40">            throw new StoreException(&quot;Authenticate&quot;,</span>
+             &quot;Invalid Token&quot;);
+        }
+<span class="fc" id="L43">    }</span>
+
+    @Override
+    public Store provisionStore(String storeID, String name, String address, String token) throws StoreException{
+<span class="fc" id="L47">        authenticate(this.token);</span>
+<span class="fc" id="L48">        return store.provisionStore(storeID, name, address, token);</span>
+    }
+
+    @Override
+    public Store showStore(String storeId, String token) throws StoreException{
+<span class="fc" id="L53">        return store.showStore(storeId, token);</span>
+    }
+        
+    @Override
+    public Aisle provisionAisle(String storeId, String aisleNumber, String name, String description, AisleLocation location, String token) throws StoreException{
+<span class="fc" id="L58">        authenticate(this.token);</span>
+<span class="fc" id="L59">        return store.provisionAisle(storeId, aisleNumber, name, description, location, token);</span>
+    }
+
+    @Override
+    public Aisle showAisle(String storeId, String aisleNumber, String token) throws StoreException{
+<span class="fc" id="L64">        return store.showAisle(storeId, aisleNumber, token);</span>
+    }
+
+    @Override
+    public Shelf provisionShelf(String storeId, String aisleNumber, String shelfId, String name, ShelfLevel level, String description, Temperature temperature, String token) throws StoreException{
+<span class="fc" id="L69">        authenticate(this.token);</span>
+<span class="fc" id="L70">        return store.provisionShelf(storeId, aisleNumber, shelfId, name, level, description, temperature, token);</span>
+    }
+
+    @Override
+    public Shelf showShelf(String storeId, String aisleNumber, String shelfId, String token) throws StoreException{
+<span class="fc" id="L75">        return store.showShelf(storeId, aisleNumber, shelfId, token);</span>
+    }
+
+    @Override
+    public Inventory provisionInventory(String inventoryId, String storeId, String aisleNumber, String shelfId, int capacity, int count, String productId, InventoryType type, String token) throws StoreException{
+<span class="fc" id="L80">        authenticate(this.token);</span>
+<span class="fc" id="L81">        return store.provisionInventory(inventoryId, storeId, aisleNumber, shelfId, capacity, count, productId, type, token);</span>
+    }
+
+    @Override
+    public Inventory showInventory(String inventoryId, String token) throws StoreException{
+<span class="fc" id="L86">        return store.showInventory(inventoryId, token);</span>
+    }
+
+    @Override
+    public Inventory updateInventory(String inventoryId, int count, String token) throws StoreException{
+<span class="fc" id="L91">        authenticate(this.token);</span>
+<span class="fc" id="L92">        return store.updateInventory(inventoryId, count, token);</span>
+    }
+
+    @Override
+    public Product provisionProduct(String productId, String name, String description, String size, String category, double price, Temperature temperature, String token) throws StoreException{
+<span class="fc" id="L97">        authenticate(this.token);</span>
+<span class="fc" id="L98">        return store.provisionProduct(productId, name, description, size, category, price, temperature, token);</span>
+    }
+
+    @Override
+    public Product showProduct(String productId, String token) throws StoreException{
+<span class="fc" id="L103">        return store.showProduct(productId, token);</span>
+    }
+
+    @Override
+    public Customer provisionCustomer(String customerId, String firstName, String lastName, CustomerType type, String email, String address, String token)throws StoreException{
+<span class="fc" id="L108">        authenticate(this.token);</span>
+<span class="fc" id="L109">        return store.provisionCustomer(customerId, firstName, lastName, type, email, address, token);</span>
+    }
+
+    @Override
+    public Customer updateCustomer(String customerId, String storeId, String aisleNumber, String token) throws StoreException{
+<span class="fc" id="L114">        authenticate(this.token);</span>
+<span class="fc" id="L115">        return store.updateCustomer(customerId, storeId, aisleNumber, token);</span>
+    }
+
+    @Override
+    public Customer showCustomer(String customerId, String token) throws StoreException{
+<span class="fc" id="L120">        authenticate(this.token);</span>
+<span class="fc" id="L121">        return store.showCustomer(customerId, token);</span>
+    }
+
+    @Override
+    public Basket provisionBasket(String basketId, String token) throws StoreException{
+<span class="fc" id="L126">        authenticate(this.token);</span>
+<span class="fc" id="L127">        return store.provisionBasket(basketId, token);</span>
+    }
+
+    @Override
+    public Basket assignCustomerBasket(String customerId, String basketId, String token) throws StoreException{
+<span class="fc" id="L132">        authenticate(this.token);</span>
+<span class="fc" id="L133">        return store.assignCustomerBasket(customerId, basketId, token);</span>
+    }
+
+    @Override
+    public Basket getCustomerBasket(String customerId, String token) throws StoreException{
+<span class="fc" id="L138">        authenticate(this.token);</span>
+<span class="fc" id="L139">        return store.getCustomerBasket(customerId, token);</span>
+    }
+
+    @Override
+    public Basket addBasketProduct(String basketId, String productId, int count, String token) throws StoreException{
+<span class="fc" id="L144">        authenticate(this.token);</span>
+<span class="fc" id="L145">        return store.addBasketProduct(basketId, productId, count, token);</span>
+    }
+
+    @Override
+    public Basket removeBasketProduct(String basketId, String productId, int count, String token) throws StoreException{
+<span class="fc" id="L150">        authenticate(this.token);</span>
+<span class="fc" id="L151">        return store.removeBasketProduct(basketId, productId, count, token);</span>
+    }
+
+    @Override
+    public Basket clearBasket(String basketId, String token) throws StoreException{
+<span class="fc" id="L156">        authenticate(this.token);</span>
+<span class="fc" id="L157">        return store.clearBasket(basketId, token);</span>
+    }
+
+    @Override
+    public Basket showBasket(String basketId, String token) throws StoreException{
+<span class="fc" id="L162">        return store.showBasket(basketId, token);</span>
+    }
+
+    @Override
+    public Device provisionDevice(String deviceId, String name, String deviceType, String storeId, String aisleNumber, String token) throws StoreException{
+<span class="fc" id="L167">        authenticate(this.token);</span>
+<span class="fc" id="L168">        return store.provisionDevice(deviceId, name, deviceType, storeId, aisleNumber, token);</span>
+    }
+
+    @Override
+    public Device showDevice(String deviceId, String token) throws StoreException{
+<span class="fc" id="L173">        return store.showDevice(deviceId, token);</span>
+    }
+
+    @Override
+    public void raiseEvent(String deviceId, String event, String token) throws StoreException{
+<span class="fc" id="L178">        authenticate(this.token);</span>
+<span class="fc" id="L179">        store.raiseEvent(deviceId, event, token);   </span>
+<span class="fc" id="L180">    }</span>
+
+    @Override
+    public void issueCommand(String deviceId, String command, String token) throws StoreException{
+<span class="fc" id="L184">        authenticate(token);</span>
+<span class="fc" id="L185">        store.issueCommand(deviceId, command, token);</span>
+<span class="fc" id="L186">    }</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -38,11 +38,11 @@ public class StoreFacade {
     }
 
     // Store Methods
-    public Store createStore(String storeID, String name, String address) throws StoreException {
+    public Store provisionStore(String storeID, String name, String address) throws StoreException {
         return proxy.provisionStore(storeID, name, address, token);
     }
 
-    public Store getStore(String storeId) throws StoreException {
+    public Store showStore(String storeId) throws StoreException {
         return proxy.showStore(storeId, token);
     }
 
@@ -51,62 +51,62 @@ public class StoreFacade {
         return proxy.provisionAisle(storeId, aisleNumber, name, description, location, token);
     }
 
-    public Aisle getAisle(String storeId, String aisleNumber) throws StoreException {
+    public Aisle showAisle(String storeId, String aisleNumber) throws StoreException {
         return proxy.showAisle(storeId, aisleNumber, token);
     }
 
     // Shelf Methods
-    public Shelf createShelf(String storeId, String aisleNumber, String shelfId, String name, ShelfLevel level, String description, Temperature temperature) throws StoreException {
+    public Shelf provisionShelf(String storeId, String aisleNumber, String shelfId, String name, ShelfLevel level, String description, Temperature temperature) throws StoreException {
         return proxy.provisionShelf(storeId, aisleNumber, shelfId, name, level, description, temperature, token);
     }
 
-    public Shelf getShelf(String storeId, String aisleNumber, String shelfId) throws StoreException {
+    public Shelf showShelf(String storeId, String aisleNumber, String shelfId) throws StoreException {
         return proxy.showShelf(storeId, aisleNumber, shelfId, token);
     }
 
     // Inventory Methods
-    public Inventory createInventory(String inventoryId, String storeId, String aisleNumber, String shelfId, int capacity, int count, String productId, InventoryType type) throws StoreException {
+    public Inventory provisionInventory(String inventoryId, String storeId, String aisleNumber, String shelfId, int capacity, int count, String productId, InventoryType type) throws StoreException {
         return proxy.provisionInventory(inventoryId, storeId, aisleNumber, shelfId, capacity, count, productId, type, token);
     }
 
-    public Inventory getInventory(String inventoryId) throws StoreException {
+    public Inventory showInventory(String inventoryId) throws StoreException {
         return proxy.showInventory(inventoryId, token);
     }
 
-    public Inventory updateInventoryCount(String inventoryId, int count) throws StoreException {
+    public Inventory updateInventory(String inventoryId, int count) throws StoreException {
         return proxy.updateInventory(inventoryId, count, token);
     }
 
     // Product Factory Methods
-    public Product createProduct(String productId, String name, String description, String size, String category, double price, Temperature temperature) throws StoreException {
+    public Product provisionProduct(String productId, String name, String description, String size, String category, double price, Temperature temperature) throws StoreException {
         Product product = ProductFactory.createProduct(productId, name, description, size, category, price, temperature);
         return proxy.provisionProduct(productId, product.getName(), product.getDescription(), product.getSize(), product.getCategory(), product.getPrice(), product.getTemperature(), token);
     }
 
-    public Product getProduct(String productId) throws StoreException {
+    public Product showProduct(String productId) throws StoreException {
         return proxy.showProduct(productId, token);
     }
 
     // Customer Factory Methods
-    public Customer createCustomer(String customerId, String firstName, String lastName, CustomerType type, String email, String address) throws StoreException {
+    public Customer provisionCustomer(String customerId, String firstName, String lastName, CustomerType type, String email, String address) throws StoreException {
         Customer customer = CustomerFactory.createCustomer(customerId, firstName, lastName, type, email, address);
         return proxy.provisionCustomer(customerId, firstName, lastName, type, email, address, token);
     }
 
-    public Customer getCustomer(String customerId) throws StoreException {
+    public Customer showCustomer(String customerId) throws StoreException {
         return proxy.showCustomer(customerId, token);
     }
 
-    public Customer updateCustomerLocation(String customerId, String storeId, String aisleNumber) throws StoreException {
+    public Customer updateCustomer(String customerId, String storeId, String aisleNumber) throws StoreException {
         return proxy.updateCustomer(customerId, storeId, aisleNumber, token);
     }
 
     // Basket Methods
-    public Basket createBasket(String basketId) throws StoreException {
+    public Basket provisionBasket(String basketId) throws StoreException {
         return proxy.provisionBasket(basketId, token);
     }
 
-    public Basket assignBasketToCustomer(String customerId, String basketId) throws StoreException {
+    public Basket assignCustomerBasket(String customerId, String basketId) throws StoreException {
         return proxy.assignCustomerBasket(customerId, basketId, token);
     }
 
@@ -114,37 +114,37 @@ public class StoreFacade {
         return proxy.getCustomerBasket(customerId, token);
     }
 
-    public Basket addProductToBasket(String basketId, String productId, int quantity) throws StoreException {
+    public Basket addBasketProduct(String basketId, String productId, int quantity) throws StoreException {
         return proxy.addBasketProduct(basketId, productId, quantity, token);
     }
 
-    public Basket removeProductFromBasket(String basketId, String productId, int quantity) throws StoreException {
+    public Basket removeBasketProduct(String basketId, String productId, int quantity) throws StoreException {
         return proxy.removeBasketProduct(basketId, productId, quantity, token);
     }
 
-    public Basket emptyBasket(String basketId) throws StoreException {
+    public Basket clearBasket(String basketId) throws StoreException {
         return proxy.clearBasket(basketId, token);
     }
 
-    public Basket viewBasket(String basketId) throws StoreException {
+    public Basket showBasket(String basketId) throws StoreException {
         return proxy.showBasket(basketId, token);
     }
 
     // Device Methods
-    public Device createDevice(String deviceId, String name, String deviceType, String storeId, String aisleNumber) throws StoreException {
+    public Device provisionDevice(String deviceId, String name, String deviceType, String storeId, String aisleNumber) throws StoreException {
         return proxy.provisionDevice(deviceId, name, deviceType, storeId, aisleNumber, token);
     }
 
-    public Device getDevice(String deviceId) throws StoreException {
+    public Device showDevice(String deviceId) throws StoreException {
         return proxy.showDevice(deviceId, token);
     }
 
     // Event and Command Methods
-    public void triggerEvent(String deviceId, String event) throws StoreException {
+    public void raiseEvent(String deviceId, String event) throws StoreException {
         proxy.raiseEvent(deviceId, event, token);
     }
 
-    public void issueCommandToDevice(String deviceId, String command) throws StoreException {
+    public void issueCommand(String deviceId, String command) throws StoreException {
         proxy.issueCommand(deviceId, command, token);
     }
 

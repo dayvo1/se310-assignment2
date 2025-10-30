@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProductFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">assignment2</a> &gt; <a href="index.source.html" class="el_package">com.se310.store.factory</a> &gt; <span class="el_source">ProductFactory.java</span></div><h1>ProductFactory.java</h1><pre class="source lang-java linenums">package com.se310.store.factory;
+import com.se310.store.model.Product;
+import com.se310.store.model.Temperature;
+
+/**
+ * Factory Pattern implementation for creating Product objects
+ *
+ * @author  Sergey L. Sundukovskiy
+ * @version 1.0
+ * @since   2025-09-25
+ */
+<span class="nc" id="L12">public class ProductFactory {</span>
+
+    // //TODO: Implement Factory Pattern for creating discounted, premium and standard products
+    public static Product createProduct(String id, String name, String description, String size, String category, Double price, Temperature temperature) {
+        
+        //extracting size (weight) from input string
+<span class="fc" id="L18">        String num = &quot;&quot;;</span>
+<span class="fc" id="L19">        int i = 0;</span>
+<span class="fc bfc" id="L20" title="All 4 branches covered.">        while (i &lt; size.length() &amp;&amp; Character.isDigit(size.charAt(i))) {</span>
+<span class="fc" id="L21">            num += size.charAt(i);</span>
+<span class="fc" id="L22">            i++;</span>
+        }
+<span class="fc" id="L24">        int weight = Integer.parseInt(num);</span>
+
+        //determining if a product is premium, standard, or discounted based on weight
+<span class="fc bfc" id="L27" title="All 2 branches covered.">        if(weight &lt; 15) {</span>
+<span class="fc" id="L28">            return createPremiumProduct(id, name, description, size, category, price, temperature);</span>
+        }
+<span class="pc bpc" id="L30" title="1 of 2 branches missed.">        else if (weight &lt; 100) {</span>
+<span class="nc" id="L31">            return createStandardProduct(id, name, description, size, category, price, temperature);</span>
+        }
+        else {
+<span class="fc" id="L34">            return createDiscountedProduct(id, name, description, size, category, price, temperature);</span>
+        }
+    }
+
+    //increasing, decreasing, or keeping the price based on type of product
+    private static Product createPremiumProduct(String id, String name, String description, String size, String category, Double price, Temperature temperature) {
+<span class="fc" id="L40">        final double PRICE_INCREASE_PERCENT = 5;</span>
+
+<span class="fc" id="L42">        Product premiumProduct = new Product(id, name, description, size, category, price + (price * PRICE_INCREASE_PERCENT / 100), temperature);</span>
+
+<span class="fc" id="L44">        return premiumProduct;</span>
+    }
+
+    private static Product createStandardProduct(String id, String name, String description, String size, String category, Double price, Temperature temperature) {
+
+<span class="nc" id="L49">        Product standardProduct = new Product(id, name, description, size, category, price, temperature);</span>
+        
+<span class="nc" id="L51">        return standardProduct;</span>
+    }
+
+    private static Product createDiscountedProduct(String id, String name, String description, String size, String category, Double price, Temperature temperature) {
+<span class="fc" id="L55">        final double PRICE_DECREASE_PERCENT = 5;</span>
+
+<span class="fc" id="L57">        Product discountedProduct = new Product(id, name, description, size, category, price - (price * PRICE_DECREASE_PERCENT / 100), temperature);</span>
+        
+<span class="fc" id="L59">        return discountedProduct;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StoreFacade.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">assignment2</a> &gt; <a href="index.source.html" class="el_package">com.se310.store.facade</a> &gt; <span class="el_source">StoreFacade.java</span></div><h1>StoreFacade.java</h1><pre class="source lang-java linenums">package com.se310.store.facade;
+
+import com.se310.store.factory.CustomerFactory;
+import com.se310.store.factory.ProductFactory;
+import com.se310.store.model.Aisle;
+import com.se310.store.model.AisleLocation;
+import com.se310.store.model.Basket;
+import com.se310.store.model.Customer;
+import com.se310.store.model.CustomerType;
+import com.se310.store.model.Device;
+import com.se310.store.model.Inventory;
+import com.se310.store.model.InventoryType;
+import com.se310.store.model.Product;
+import com.se310.store.model.Shelf;
+import com.se310.store.model.ShelfLevel;
+import com.se310.store.model.Store;
+import com.se310.store.model.StoreException;
+import com.se310.store.model.Temperature;
+import com.se310.store.proxy.StoreServiceProxy;
+
+/**
+ * Facade Pattern implementation for the store subsystem
+ * Hides the complexity of the StoreServiceProxy and factories by providing
+ * a simplified unified interface for client code.
+ *
+ * @author  Sergey L. Sundukovskiy
+ * @version 1.0
+ * @since   2025-09-25
+ */
+public class StoreFacade {
+
+    private final StoreServiceProxy proxy;
+    private final String token;
+
+<span class="fc" id="L35">    public StoreFacade(String token) {</span>
+<span class="fc" id="L36">        this.token = token;</span>
+<span class="fc" id="L37">        this.proxy = new StoreServiceProxy(token);</span>
+<span class="fc" id="L38">    }</span>
+
+    // Store Methods
+    public Store provisionStore(String storeID, String name, String address) throws StoreException {
+<span class="fc" id="L42">        return proxy.provisionStore(storeID, name, address, token);</span>
+    }
+
+    public Store showStore(String storeId) throws StoreException {
+<span class="fc" id="L46">        return proxy.showStore(storeId, token);</span>
+    }
+
+    // Aisle Methods
+    public Aisle provisionAisle(String storeId, String aisleNumber, String name, String description, AisleLocation location) throws StoreException {
+<span class="fc" id="L51">        return proxy.provisionAisle(storeId, aisleNumber, name, description, location, token);</span>
+    }
+
+    public Aisle showAisle(String storeId, String aisleNumber) throws StoreException {
+<span class="fc" id="L55">        return proxy.showAisle(storeId, aisleNumber, token);</span>
+    }
+
+    // Shelf Methods
+    public Shelf provisionShelf(String storeId, String aisleNumber, String shelfId, String name, ShelfLevel level, String description, Temperature temperature) throws StoreException {
+<span class="fc" id="L60">        return proxy.provisionShelf(storeId, aisleNumber, shelfId, name, level, description, temperature, token);</span>
+    }
+
+    public Shelf showShelf(String storeId, String aisleNumber, String shelfId) throws StoreException {
+<span class="fc" id="L64">        return proxy.showShelf(storeId, aisleNumber, shelfId, token);</span>
+    }
+
+    // Inventory Methods
+    public Inventory provisionInventory(String inventoryId, String storeId, String aisleNumber, String shelfId, int capacity, int count, String productId, InventoryType type) throws StoreException {
+<span class="fc" id="L69">        return proxy.provisionInventory(inventoryId, storeId, aisleNumber, shelfId, capacity, count, productId, type, token);</span>
+    }
+
+    public Inventory showInventory(String inventoryId) throws StoreException {
+<span class="fc" id="L73">        return proxy.showInventory(inventoryId, token);</span>
+    }
+
+    public Inventory updateInventory(String inventoryId, int count) throws StoreException {
+<span class="fc" id="L77">        return proxy.updateInventory(inventoryId, count, token);</span>
+    }
+
+    // Product Factory Methods
+    public Product provisionProduct(String productId, String name, String description, String size, String category, double price, Temperature temperature) throws StoreException {
+<span class="fc" id="L82">        Product product = ProductFactory.createProduct(productId, name, description, size, category, price, temperature);</span>
+<span class="fc" id="L83">        return proxy.provisionProduct(productId, product.getName(), product.getDescription(), product.getSize(), product.getCategory(), product.getPrice(), product.getTemperature(), token);</span>
+    }
+
+    public Product showProduct(String productId) throws StoreException {
+<span class="fc" id="L87">        return proxy.showProduct(productId, token);</span>
+    }
+
+    // Customer Factory Methods
+    public Customer provisionCustomer(String customerId, String firstName, String lastName, CustomerType type, String email, String address) throws StoreException {
+<span class="fc" id="L92">        Customer customer = CustomerFactory.createCustomer(customerId, firstName, lastName, type, email, address);</span>
+<span class="fc" id="L93">        return proxy.provisionCustomer(customerId, firstName, lastName, type, email, address, token);</span>
+    }
+
+    public Customer showCustomer(String customerId) throws StoreException {
+<span class="fc" id="L97">        return proxy.showCustomer(customerId, token);</span>
+    }
+
+    public Customer updateCustomer(String customerId, String storeId, String aisleNumber) throws StoreException {
+<span class="fc" id="L101">        return proxy.updateCustomer(customerId, storeId, aisleNumber, token);</span>
+    }
+
+    // Basket Methods
+    public Basket provisionBasket(String basketId) throws StoreException {
+<span class="fc" id="L106">        return proxy.provisionBasket(basketId, token);</span>
+    }
+
+    public Basket assignCustomerBasket(String customerId, String basketId) throws StoreException {
+<span class="fc" id="L110">        return proxy.assignCustomerBasket(customerId, basketId, token);</span>
+    }
+
+    public Basket getCustomerBasket(String customerId) throws StoreException {
+<span class="fc" id="L114">        return proxy.getCustomerBasket(customerId, token);</span>
+    }
+
+    public Basket addBasketProduct(String basketId, String productId, int quantity) throws StoreException {
+<span class="fc" id="L118">        return proxy.addBasketProduct(basketId, productId, quantity, token);</span>
+    }
+
+    public Basket removeBasketProduct(String basketId, String productId, int quantity) throws StoreException {
+<span class="fc" id="L122">        return proxy.removeBasketProduct(basketId, productId, quantity, token);</span>
+    }
+
+    public Basket clearBasket(String basketId) throws StoreException {
+<span class="fc" id="L126">        return proxy.clearBasket(basketId, token);</span>
+    }
+
+    public Basket showBasket(String basketId) throws StoreException {
+<span class="fc" id="L130">        return proxy.showBasket(basketId, token);</span>
+    }
+
+    // Device Methods
+    public Device provisionDevice(String deviceId, String name, String deviceType, String storeId, String aisleNumber) throws StoreException {
+<span class="fc" id="L135">        return proxy.provisionDevice(deviceId, name, deviceType, storeId, aisleNumber, token);</span>
+    }
+
+    public Device showDevice(String deviceId) throws StoreException {
+<span class="fc" id="L139">        return proxy.showDevice(deviceId, token);</span>
+    }
+
+    // Event and Command Methods
+    public void raiseEvent(String deviceId, String event) throws StoreException {
+<span class="fc" id="L144">        proxy.raiseEvent(deviceId, event, token);</span>
+<span class="fc" id="L145">    }</span>
+
+    public void issueCommand(String deviceId, String command) throws StoreException {
+<span class="fc" id="L148">        proxy.issueCommand(deviceId, command, token);</span>
+<span class="fc" id="L149">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

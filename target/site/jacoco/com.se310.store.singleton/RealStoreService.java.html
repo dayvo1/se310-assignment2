@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RealStoreService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">assignment2</a> &gt; <a href="index.source.html" class="el_package">com.se310.store.singleton</a> &gt; <span class="el_source">RealStoreService.java</span></div><h1>RealStoreService.java</h1><pre class="source lang-java linenums">package com.se310.store.singleton;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import com.se310.store.model.Aisle;
+import com.se310.store.model.AisleLocation;
+import com.se310.store.model.Appliance;
+import com.se310.store.model.ApplianceType;
+import com.se310.store.model.Basket;
+import com.se310.store.model.Customer;
+import com.se310.store.model.CustomerType;
+import com.se310.store.model.Device;
+import com.se310.store.model.Inventory;
+import com.se310.store.model.InventoryType;
+import com.se310.store.model.Product;
+import com.se310.store.model.Sensor;
+import com.se310.store.model.SensorType;
+import com.se310.store.model.Shelf;
+import com.se310.store.model.ShelfLevel;
+import com.se310.store.model.Store;
+import com.se310.store.model.StoreException;
+import com.se310.store.model.StoreLocation;
+import com.se310.store.model.Temperature;
+import com.se310.store.proxy.StoreService;
+
+/**
+ * This is the main service of the system implementing ommand API for processing CLI commands and
+ * rvice API for processing Store events
+ *
+ * @author  Sergey L. Sundukovskiy
+ * @version 1.0
+ * @since 2025-09-25
+ **/
+<span class="fc" id="L37">public class RealStoreService implements StoreService {</span>
+
+    //TODO: Implement Thread Safe Double-Checked Locking Singleton Pattern
+    private static volatile RealStoreService instance;
+
+    public static RealStoreService getInstance() {
+<span class="pc bpc" id="L43" title="1 of 2 branches missed.">        if(instance == null) {</span>
+<span class="fc" id="L44">            synchronized (StoreService.class) {</span>
+<span class="pc bpc" id="L45" title="1 of 2 branches missed.">                if(instance == null) {</span>
+<span class="fc" id="L46">                    instance = new RealStoreService();</span>
+                }
+<span class="fc" id="L48">            }</span>
+        }
+<span class="fc" id="L50">        return instance;</span>
+    }
+
+    private static final Map&lt;String, Store&gt; storeMap;
+    private static final Map&lt;String, Customer&gt; customerMap;
+    private static final Map&lt;String, Product&gt; productMap;
+    private static final Map&lt;String, Inventory&gt; inventoryMap;
+    private static final Map&lt;String, Basket&gt; basketMap;
+    private static final Map&lt;String, Device&gt; deviceMap;
+
+
+    // Initialize maps
+    static {
+<span class="fc" id="L63">        storeMap = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L64">        customerMap = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L65">        productMap = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L66">        inventoryMap = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L67">        basketMap = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L68">        deviceMap = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L69">    }</span>
+
+
+    public Store provisionStore(String storeId, String name, String address, String token)
+            throws StoreException {
+
+<span class="fc" id="L75">        Store store = new Store(storeId, name, address);</span>
+
+        //If Store already exists throw and exception
+<span class="pc bpc" id="L78" title="1 of 2 branches missed.">        if (storeMap.putIfAbsent(storeId, store) != null) {</span>
+<span class="nc" id="L79">            throw new StoreException(&quot;Provision Store&quot;, &quot;Store Already Exists&quot;);</span>
+        }
+<span class="fc" id="L81">        return store;</span>
+    }
+
+    public Store showStore(String storeId, String token) throws StoreException {
+
+        //If Store does not exist throw and exception
+<span class="fc" id="L87">        Store store = storeMap.get(storeId);</span>
+<span class="pc bpc" id="L88" title="1 of 2 branches missed.">        if(store == null)</span>
+<span class="nc" id="L89">            throw new StoreException(&quot;Show Store&quot;, &quot;Store Does Not Exist&quot;);</span>
+
+<span class="fc" id="L91">        return store;</span>
+    }
+
+    public Aisle provisionAisle(String storeId, String aisleNumber, String name, String description,
+                                AisleLocation location, String token) throws StoreException {
+
+<span class="fc" id="L97">        Store store = storeMap.get(storeId);</span>
+        Aisle aisle;
+
+        //Check to see if Store already exists;
+<span class="pc bpc" id="L101" title="1 of 2 branches missed.">        if(store == null){</span>
+<span class="nc" id="L102">            throw new StoreException(&quot;Provision Aisle&quot;, &quot;Store Does Not Exist&quot;);</span>
+        } else {
+<span class="fc" id="L104">            aisle = store.addAisle(aisleNumber, name, description, location);</span>
+        }
+
+<span class="fc" id="L107">        return aisle;</span>
+    }
+
+    public Aisle showAisle(String storeId, String aisleNumber, String token) throws StoreException {
+<span class="fc" id="L111">        Store store = storeMap.get(storeId);</span>
+        Aisle aisle;
+        //Check to see if Store exists
+<span class="pc bpc" id="L114" title="1 of 2 branches missed.">        if(store == null){</span>
+<span class="nc" id="L115">            throw new StoreException(&quot;Show Aisle&quot;, &quot;Store Does Not Exist&quot;);</span>
+        } else {
+            //Check to see if Aisle already exists
+<span class="fc" id="L118">            aisle = store.getAisle(aisleNumber);</span>
+<span class="pc bpc" id="L119" title="1 of 2 branches missed.">            if (aisle == null) {</span>
+<span class="nc" id="L120">                throw new StoreException(&quot;Show Aisle&quot;, &quot;Aisle Does Not Exist&quot;);</span>
+            }
+        }
+<span class="fc" id="L123">        return aisle;</span>
+    }
+
+    public Shelf provisionShelf(String storeId, String aisleNumber, String shelfId, String name,
+                                ShelfLevel level, String description, Temperature temperature, String token) throws StoreException {
+
+<span class="fc" id="L129">        Store store = storeMap.get(storeId);</span>
+        Shelf shelf;
+
+        //Check to see if Store exists
+<span class="pc bpc" id="L133" title="1 of 2 branches missed.">        if(store == null){</span>
+<span class="nc" id="L134">            throw new StoreException(&quot;Provision Shelf&quot;, &quot;Store Does Not Exist&quot;);</span>
+        } else {
+<span class="fc" id="L136">            Aisle aisle = store.getAisle(aisleNumber);</span>
+            //Check to see if Aisle exists
+<span class="pc bpc" id="L138" title="1 of 2 branches missed.">            if (aisle == null){</span>
+<span class="nc" id="L139">                throw new StoreException(&quot;Provision Shelf&quot;, &quot;Aisle Does Not Exist&quot;);</span>
+            } else {
+<span class="fc" id="L141">                shelf = aisle.getShelf(shelfId);</span>
+                //Check to see if Shelf exists
+<span class="pc bpc" id="L143" title="1 of 2 branches missed.">                if(shelf != null){</span>
+<span class="nc" id="L144">                    throw new StoreException(&quot;Provision Shelf&quot;, &quot;Shelf Already Exists&quot;);</span>
+                }
+
+                //Add Shelf to the Aisle
+<span class="fc" id="L148">                shelf = aisle.addShelf(shelfId, name, level, description, temperature);</span>
+            }
+        }
+<span class="fc" id="L151">        return shelf;</span>
+    }
+
+    public Shelf showShelf(String storeId, String aisleNumber, String shelfId, String token) throws StoreException {
+<span class="fc" id="L155">        Store store = storeMap.get(storeId);</span>
+        Shelf shelf;
+
+        //Check to see if Store exists
+<span class="pc bpc" id="L159" title="1 of 2 branches missed.">        if(store == null){</span>
+<span class="nc" id="L160">            throw new StoreException(&quot;Show Shelf&quot;, &quot;Store Does Not Exist&quot;);</span>
+        } else {
+            //Check to see if Aisle exists
+<span class="fc" id="L163">            Aisle aisle = store.getAisle(aisleNumber);</span>
+<span class="pc bpc" id="L164" title="1 of 2 branches missed.">            if (aisle == null){</span>
+<span class="nc" id="L165">                throw new StoreException(&quot;Show Shelf&quot;, &quot;Aisle Does Not Exist&quot;);</span>
+            } else {
+                //Check to see if Shelf exists
+<span class="fc" id="L168">                shelf = aisle.getShelf(shelfId);</span>
+<span class="fc bfc" id="L169" title="All 2 branches covered.">                if(shelf == null){</span>
+<span class="fc" id="L170">                    throw new StoreException(&quot;Show Shelf&quot;, &quot;Shelf Does Not Exist&quot;);</span>
+                }
+            }
+        }
+<span class="fc" id="L174">        return shelf;</span>
+    }
+    
+    public Inventory provisionInventory(String inventoryId, String storeId, String aisleNumber, String shelfId,
+                                        int capacity, int count, String productId, InventoryType type, String token) throws StoreException {
+
+<span class="fc" id="L180">        Store store = storeMap.get(storeId);</span>
+<span class="fc" id="L181">        Product product = productMap.get(productId);</span>
+        Inventory inventory;
+
+        //Check to see if Store exists
+<span class="pc bpc" id="L185" title="1 of 2 branches missed.">        if(store == null){</span>
+<span class="nc" id="L186">            throw new StoreException(&quot;Provision Inventory&quot;, &quot;Store Does Not Exist&quot;);</span>
+        } else {
+            //Check to see if Aisle exists
+<span class="fc" id="L189">            Aisle aisle = store.getAisle(aisleNumber);</span>
+<span class="pc bpc" id="L190" title="1 of 2 branches missed.">            if (aisle == null){</span>
+<span class="nc" id="L191">                throw new StoreException(&quot;Provision Inventory&quot;, &quot;Aisle Does Not Exist&quot;);</span>
+            } else {
+                //Check to see if Shelf exists
+<span class="fc" id="L194">                Shelf shelf = aisle.getShelf(shelfId);</span>
+<span class="pc bpc" id="L195" title="1 of 2 branches missed.">                if(shelf == null){</span>
+<span class="nc" id="L196">                    throw new StoreException(&quot;Provision Inventory&quot;, &quot;Shelf Does Not Exist&quot;);</span>
+<span class="pc bpc" id="L197" title="1 of 2 branches missed.">                } else if(product == null){</span>
+                    //Check to see if Product exists
+<span class="nc" id="L199">                    throw new StoreException(&quot;Provision Inventory&quot;, &quot;Product Does Not Exist&quot;);</span>
+<span class="fc bfc" id="L200" title="All 2 branches covered.">                } else if(!shelf.getTemperature().equals(product.getTemperature())){</span>
+                    //Make sure that Product Temperature and Shelf Temperature are consistent
+<span class="fc" id="L202">                    throw new StoreException(&quot;Provision Inventory&quot;, &quot;Product and Shelf Temperature &quot; +</span>
+                            &quot;Is Not Consistent&quot;);
+                }
+
+                //Add Inventory to the Shelf
+<span class="fc" id="L207">                inventory = shelf.addInventory(inventoryId, storeId, aisleNumber, shelfId,</span>
+                        capacity, count, productId, type);
+
+                //Add Inventory to the global Inventory Map
+<span class="fc" id="L211">                inventoryMap.put(inventoryId, inventory);</span>
+
+                //Add Inventory to the Store
+<span class="fc" id="L214">                store.addInventory(inventory);</span>
+
+            }
+        }
+
+<span class="fc" id="L219">        return inventory;</span>
+    }
+
+    public Inventory showInventory(String inventoryId, String token) throws StoreException {
+
+<span class="fc" id="L224">        Inventory inventory = inventoryMap.get(inventoryId);</span>
+        //Check to see if Inventory exists
+<span class="fc bfc" id="L226" title="All 2 branches covered.">        if (inventory == null)</span>
+<span class="fc" id="L227">            throw new StoreException(&quot;Show Inventory&quot;, &quot;Inventory Does Not Exist&quot;);</span>
+<span class="fc" id="L228">        return inventory;</span>
+    }
+
+    public Inventory updateInventory(String inventoryId, int count, String token) throws StoreException {
+<span class="fc" id="L232">        Inventory inventory = inventoryMap.get(inventoryId);</span>
+        //Check to see if Inventory exists
+<span class="fc bfc" id="L234" title="All 2 branches covered.">        if (inventory == null)</span>
+<span class="fc" id="L235">            throw new StoreException(&quot;Update Inventory&quot;, &quot;Inventory Does Not Exist&quot;);</span>
+
+        //Update Inventory count
+<span class="fc" id="L238">        inventory.updateInventory(count);</span>
+
+<span class="fc" id="L240">        return inventory;</span>
+    }
+
+    public Product provisionProduct(String productId, String name, String description, String size, String category,
+                                    double price, Temperature temperature, String token) throws StoreException {
+<span class="fc" id="L245">        Product product = new Product(productId, name, description, size, category, price, temperature);</span>
+
+        //Check to see if Product already exists
+<span class="pc bpc" id="L248" title="1 of 2 branches missed.">        if (productMap.putIfAbsent(productId, product) != null)</span>
+<span class="nc" id="L249">            throw new StoreException(&quot;Provision Product&quot;, &quot;Product Already Exists&quot;);</span>
+
+<span class="fc" id="L251">        return product;</span>
+    }
+
+    public Product showProduct(String productId, String token) throws StoreException {
+<span class="fc" id="L255">        Product product = productMap.get(productId);</span>
+        //Check to see if Product exists
+<span class="pc bpc" id="L257" title="1 of 2 branches missed.">        if (product == null)</span>
+<span class="nc" id="L258">            throw new StoreException(&quot;Show Product&quot;, &quot;Product Does Not Exist&quot;);</span>
+<span class="fc" id="L259">        return product;</span>
+    }
+
+
+    public Customer provisionCustomer(String customerId, String firstName, String lastName,
+                                      CustomerType type, String email, String address, String token)
+            throws StoreException {
+
+<span class="fc" id="L267">        Customer customer = new Customer(customerId, firstName, lastName, type, email, address);</span>
+        //Check to see if the Customer already exists
+<span class="pc bpc" id="L269" title="1 of 2 branches missed.">        if(customerMap.putIfAbsent(customerId, customer) != null)</span>
+<span class="nc" id="L270">            throw new StoreException(&quot;Provision Customer&quot;, &quot;Customer Already Exists&quot;);</span>
+
+<span class="fc" id="L272">        return customer;</span>
+    }
+
+    public Customer updateCustomer(String customerId, String storeId, String aisleNumber, String token)
+            throws StoreException {
+<span class="fc" id="L277">        Store store = storeMap.get(storeId);</span>
+        Customer customer;
+
+        //Check to see if the Store exists
+<span class="pc bpc" id="L281" title="1 of 2 branches missed.">        if(store == null){</span>
+<span class="nc" id="L282">            throw new StoreException(&quot;Update Customer&quot;, &quot;Store Does Not Exist&quot;);</span>
+        } else {
+            //Check to see if Aisle exists
+<span class="fc" id="L285">            Aisle aisle = store.getAisle(aisleNumber);</span>
+<span class="pc bpc" id="L286" title="1 of 2 branches missed.">            if (aisle == null){</span>
+<span class="nc" id="L287">                throw new StoreException(&quot;Update Customer&quot;, &quot;Aisle Does Not Exist&quot;);</span>
+            } else {
+                //Check to see if Customer exists
+<span class="fc" id="L290">                customer = customerMap.get(customerId);</span>
+<span class="pc bpc" id="L291" title="1 of 2 branches missed.">                if(customer == null){</span>
+<span class="nc" id="L292">                    throw new StoreException(&quot;Update Customer&quot;, &quot;Customer Does Not Exist&quot;);</span>
+                }
+            }
+        }
+
+        //Check to see if Customer changing Stores
+<span class="pc bpc" id="L298" title="3 of 4 branches missed.">        if(customer.getStoreLocation() != null &amp;&amp; !customer.getStoreLocation().getStoreId().equals(storeId)){</span>
+            //Check to see if Customer already exists in other Stores
+<span class="nc" id="L300">            Map&lt;Store, Customer&gt; customerStores  = storeMap.entrySet()</span>
+<span class="nc" id="L301">                    .stream()</span>
+<span class="nc bnc" id="L302" title="All 4 branches missed.">                    .filter(tempStore -&gt; (tempStore.getValue().getCustomer(customerId) != null &amp;&amp; tempStore.getValue().getCustomer(customerId).getId().equals(customerId)))</span>
+<span class="nc" id="L303">                    .collect(Collectors.toMap(Map.Entry::getValue, tempStore -&gt; tempStore.getValue().</span>
+<span class="nc" id="L304">                            getCustomer(customerId)));</span>
+
+            //If Customer exist in other stores remove him/her
+<span class="nc" id="L307">            customerStores.forEach((key, value) -&gt; key.removeCustomer(customer));</span>
+
+            //Before Customer can change the Store he/she must clear the Basket
+<span class="nc bnc" id="L310" title="All 2 branches missed.">            if(customer.getBasket() != null)</span>
+<span class="nc" id="L311">                customer.getBasket().clearBasket();</span>
+
+            //If the Customer moves to a different Store clear out the basket and the time seen
+<span class="nc" id="L314">            customer.assignBasket(null);</span>
+<span class="nc" id="L315">            customer.setLastSeen(null);</span>
+
+            //Add Customer to another store
+<span class="nc" id="L318">            store.addCustomer(customer);</span>
+<span class="nc" id="L319">        } else {</span>
+
+<span class="fc" id="L321">            customer.setStoreLocation(new StoreLocation(storeId, aisleNumber));</span>
+<span class="fc" id="L322">            customer.setLastSeen(new Date(System.currentTimeMillis()));</span>
+        }
+
+<span class="fc" id="L325">        return customer;</span>
+    }
+
+    public Customer showCustomer(String customerId, String token) throws StoreException {
+
+        //Check to see if the Customer exists
+<span class="fc" id="L331">        Customer customer = customerMap.get(customerId);</span>
+<span class="pc bpc" id="L332" title="1 of 2 branches missed.">        if(customer == null)</span>
+<span class="nc" id="L333">            throw new StoreException(&quot;Show Customer&quot;, &quot;Customer Does Not Exist&quot;);</span>
+
+<span class="fc" id="L335">        return customer;</span>
+    }
+
+    public Basket provisionBasket(String basketId, String token) throws StoreException {
+
+<span class="fc" id="L340">        Basket basket = new Basket(basketId);</span>
+        //Check if Basket already exists
+<span class="pc bpc" id="L342" title="1 of 2 branches missed.">        if(basketMap.putIfAbsent(basketId, basket) != null)</span>
+<span class="nc" id="L343">            throw new StoreException(&quot;Provision Basket&quot;, &quot;Basket Already Exists&quot;);</span>
+
+<span class="fc" id="L345">        return basket;</span>
+    }
+
+    public Basket assignCustomerBasket(String customerId, String basketId, String token) throws StoreException {
+
+<span class="fc" id="L350">        Customer customer = customerMap.get(customerId);</span>
+<span class="fc" id="L351">        Basket basket = basketMap.get(basketId);</span>
+
+        //Check to see Customer and the Basket already exist
+<span class="pc bpc" id="L354" title="1 of 2 branches missed.">        if(customer == null){</span>
+<span class="nc" id="L355">            throw new StoreException(&quot;Assign Customer Basket&quot;, &quot;Customer Does Not Exist&quot;);</span>
+        } else {
+<span class="pc bpc" id="L357" title="1 of 2 branches missed.">            if (basket == null){</span>
+<span class="nc" id="L358">                throw new StoreException(&quot;Assign Customer Basket&quot;, &quot;Basket Does Not Exist&quot;);</span>
+            }
+        }
+
+        //Assign Basket to the Customer
+<span class="fc" id="L363">        customer.assignBasket(basket);</span>
+        //Keep the global copy of all the baskets
+<span class="fc" id="L365">        basketMap.put(basketId, basket);</span>
+
+<span class="fc" id="L367">        Store store = storeMap.get(customerMap.get(customerId).getStoreLocation().getStoreId());</span>
+
+        //Associate basket with the customer
+<span class="fc" id="L370">        basket.setCustomer(customer);</span>
+        //Create bidirectional association between Store and the Basket
+<span class="fc" id="L372">        basket.setStore(store);</span>
+<span class="fc" id="L373">        store.addBasket(basket);</span>
+
+<span class="fc" id="L375">        return basket;</span>
+    }
+
+    public Basket getCustomerBasket(String customerId, String token) throws StoreException {
+<span class="fc" id="L379">        Customer customer = customerMap.get(customerId);</span>
+        Basket basket;
+
+        //Check if Customer exists
+<span class="pc bpc" id="L383" title="1 of 2 branches missed.">        if(customer == null){</span>
+<span class="nc" id="L384">            throw new StoreException(&quot;Get Customer Basket&quot;, &quot;Customer Does Not Exist&quot;);</span>
+        } else {
+<span class="fc" id="L386">            basket = customer.getBasket();</span>
+            //Check to see if Customer has been assigned the Basket
+<span class="pc bpc" id="L388" title="1 of 2 branches missed.">            if (basket == null) {</span>
+<span class="nc" id="L389">                throw new StoreException(&quot;Get Customer Basket&quot;, &quot;Customer Does Not Have a Basket&quot;);</span>
+            }
+        }
+<span class="fc" id="L392">        return basket;</span>
+    }
+
+    public Basket addBasketProduct(String basketId, String productId, int count, String token)
+            throws StoreException {
+<span class="fc" id="L397">        Basket basket = basketMap.get(basketId);</span>
+<span class="fc" id="L398">        Product product = productMap.get(productId);</span>
+
+        //Check to see if basket already exists product we are trying to add to the basket
+        //exists as well and basket has been assigned to the customer
+<span class="pc bpc" id="L402" title="1 of 2 branches missed.">        if(basket == null){</span>
+<span class="nc" id="L403">            throw new StoreException(&quot;Add Basket Product&quot;, &quot;Basket Does Not Exist&quot;);</span>
+<span class="pc bpc" id="L404" title="1 of 2 branches missed.">        } else if(product == null){</span>
+<span class="nc" id="L405">            throw new StoreException(&quot;Add Basket Product&quot;, &quot;Product Does Not Exist&quot;);</span>
+<span class="pc bpc" id="L406" title="1 of 2 branches missed.">        } else if(basket.getCustomer() == null){</span>
+<span class="nc" id="L407">            throw new StoreException(&quot;Add Basket Product&quot;, &quot;Basket Has Not Being Assigned&quot;);</span>
+        }
+        //Add a product to the basket
+<span class="fc" id="L410">        basket.addProduct(productId, count);</span>
+
+<span class="fc" id="L412">        return basket;</span>
+    }
+
+    public Basket removeBasketProduct(String basketId, String productId, int count, String token) throws StoreException {
+<span class="fc" id="L416">        Basket basket = basketMap.get(basketId);</span>
+<span class="fc" id="L417">        Product product = productMap.get(productId);</span>
+
+        //Check to see if basket already exists product we are trying to add to the basket
+        //exists as well and basket has been assigned to the customer
+<span class="pc bpc" id="L421" title="1 of 2 branches missed.">        if(basket == null){</span>
+<span class="nc" id="L422">            throw new StoreException(&quot;Remove Basket Product&quot;, &quot;Basket Does Not Exist&quot;);</span>
+<span class="pc bpc" id="L423" title="1 of 2 branches missed.">        } else if(product == null){</span>
+<span class="nc" id="L424">            throw new StoreException(&quot;Remove Basket Product&quot;, &quot;Product Does Not Exist&quot;);</span>
+<span class="pc bpc" id="L425" title="1 of 2 branches missed.">        } else if(basket.getCustomer() == null){</span>
+<span class="nc" id="L426">            throw new StoreException(&quot;Remove Basket Product&quot;, &quot;Basket Has Not Being Assigned&quot;);</span>
+        }
+        //Remove product from the basket
+<span class="fc" id="L429">        basket.removeProduct(productId, count);</span>
+
+<span class="fc" id="L431">        return basket;</span>
+    }
+
+    public Basket clearBasket(String basketId, String token) throws StoreException {
+
+<span class="fc" id="L436">        Basket basket = basketMap.get(basketId);</span>
+
+        //Check to see if basket already exists and basket has been assigned to the customer
+<span class="pc bpc" id="L439" title="1 of 2 branches missed.">        if(basket == null){</span>
+<span class="nc" id="L440">            throw new StoreException(&quot;Clear Basket&quot;, &quot;Basket Does Not Exist&quot;);</span>
+<span class="pc bpc" id="L441" title="1 of 2 branches missed.">        } else if(basket.getCustomer() == null){</span>
+<span class="nc" id="L442">            throw new StoreException(&quot;Clear Basket&quot;, &quot;Basket Has Not Being Assigned&quot;);</span>
+        }
+<span class="fc" id="L444">        basket.clearBasket();</span>
+
+<span class="fc" id="L446">        return basket;</span>
+    }
+
+    public Basket showBasket(String basketId, String token) throws StoreException {
+<span class="fc" id="L450">        Basket basket = basketMap.get(basketId);</span>
+
+        //Check to see if basket already exists and basket has been assigned to the customer
+<span class="pc bpc" id="L453" title="1 of 2 branches missed.">        if(basket == null){</span>
+<span class="nc" id="L454">            throw new StoreException(&quot;Show Basket Product&quot;, &quot;Basket Does Not Exist&quot;);</span>
+<span class="fc bfc" id="L455" title="All 2 branches covered.">        } else if(basket.getCustomer() == null){</span>
+<span class="fc" id="L456">            throw new StoreException(&quot;Show Basket Product&quot;, &quot;Basket Has Not Being Assigned&quot;);</span>
+        }
+
+<span class="fc" id="L459">        return basket;</span>
+    }
+
+    public Device provisionDevice(String deviceId, String name, String deviceType, String storeId,
+                                  String aisleNumber, String token) throws StoreException {
+
+<span class="fc" id="L465">        Store store = storeMap.get(storeId);</span>
+        Device device;
+        StoreLocation storeLocation;
+
+        //Check to see if store exists
+<span class="pc bpc" id="L470" title="1 of 2 branches missed.">        if(store == null){</span>
+<span class="nc" id="L471">            throw new StoreException(&quot;Provision Device&quot;, &quot;Store Does Not Exist&quot;);</span>
+        } else {
+
+            //Check to see if aisle exists
+<span class="fc" id="L475">            Aisle aisle = store.getAisle(aisleNumber);</span>
+<span class="pc bpc" id="L476" title="1 of 2 branches missed.">            if (aisle == null){</span>
+<span class="nc" id="L477">                throw new StoreException(&quot;Provision Device&quot;, &quot;Aisle Does Not Exist&quot;);</span>
+            } else {
+<span class="fc" id="L479">                storeLocation = new StoreLocation(storeId, aisleNumber);</span>
+
+                //Check to see if device already exists
+<span class="fc" id="L482">                device = deviceMap.get(deviceId);</span>
+<span class="pc bpc" id="L483" title="1 of 2 branches missed.">                if(device != null){</span>
+<span class="nc" id="L484">                    throw new StoreException(&quot;Provision Device&quot;, &quot;Device Already Exists&quot;);</span>
+                }
+
+                //Determine wha type of device we are trying to add
+<span class="fc bfc" id="L488" title="All 2 branches covered.">                for (SensorType sensor : SensorType.values()) {</span>
+<span class="fc bfc" id="L489" title="All 2 branches covered.">                    if (sensor.name().equals(deviceType)){</span>
+<span class="fc" id="L490">                        device = new Sensor (deviceId, name, storeLocation, deviceType);</span>
+                    }
+                }
+<span class="fc bfc" id="L493" title="All 2 branches covered.">                for (ApplianceType appliance : ApplianceType.values()) {</span>
+<span class="fc bfc" id="L494" title="All 2 branches covered.">                    if (appliance.name().equals(deviceType)){</span>
+<span class="fc" id="L495">                        device = new Appliance(deviceId, name, storeLocation, deviceType);</span>
+                    }
+                }
+
+                //Add device to the global map
+<span class="fc" id="L500">                deviceMap.put(deviceId,device);</span>
+                //Add device to the local store
+<span class="fc" id="L502">                store.addDevice(device);</span>
+
+            }
+        }
+<span class="fc" id="L506">        return device;</span>
+    }
+
+    public Device showDevice(String deviceId, String token) throws StoreException {
+<span class="fc" id="L510">        Device device = deviceMap.get(deviceId);</span>
+
+        //Check to see if device exists
+<span class="pc bpc" id="L513" title="1 of 2 branches missed.">        if(device == null)</span>
+<span class="nc" id="L514">            throw new StoreException(&quot;Show Device&quot;, &quot;Device Does Not Exist&quot;);</span>
+
+<span class="fc" id="L516">        return device;</span>
+    }
+
+    public void raiseEvent(String deviceId, String event, String token) throws StoreException {
+<span class="fc" id="L520">        Device device = deviceMap.get(deviceId);</span>
+
+        //Check to see if a device exists
+<span class="pc bpc" id="L523" title="1 of 2 branches missed.">        if(device == null){</span>
+<span class="nc" id="L524">            throw new StoreException(&quot;Raise Event&quot;, &quot;Device Does Not Exist&quot;);</span>
+        }
+<span class="fc" id="L526">        device.processEvent(event);</span>
+
+<span class="fc" id="L528">    }</span>
+
+    public void issueCommand(String deviceId, String command, String token) throws StoreException {
+
+<span class="fc" id="L532">        Appliance appliance = (Appliance) deviceMap.get(deviceId);</span>
+
+        //Check to see if the appliance exists
+<span class="pc bpc" id="L535" title="1 of 2 branches missed.">        if(appliance == null){</span>
+<span class="nc" id="L536">            throw new StoreException(&quot;Issue Command&quot;, &quot;Device Does Not Exist&quot;);</span>
+        }
+<span class="fc" id="L538">        appliance.processCommand(command);</span>
+<span class="fc" id="L539">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

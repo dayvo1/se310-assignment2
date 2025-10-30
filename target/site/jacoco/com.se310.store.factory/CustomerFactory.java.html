@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CustomerFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">assignment2</a> &gt; <a href="index.source.html" class="el_package">com.se310.store.factory</a> &gt; <span class="el_source">CustomerFactory.java</span></div><h1>CustomerFactory.java</h1><pre class="source lang-java linenums">package com.se310.store.factory;
+import com.se310.store.model.Customer;
+import com.se310.store.model.CustomerType;
+
+/**
+ * Factory Pattern implementation for creating Customer objects
+ *
+ * @author  Sergey L. Sundukovskiy
+ * @version 1.0
+ * @since   2025-09-25
+ */
+<span class="nc" id="L12">public class CustomerFactory {</span>
+
+    public static Customer createCustomer(String id, String firstName, String lastName, CustomerType type, String email, String accountAddress) {
+
+<span class="pc bpc" id="L16" title="1 of 2 branches missed.">        if(type == null) {</span>
+            //create customers as guest registered customer
+<span class="nc" id="L18">            return createStandardCustomer(id, firstName, lastName, type, email, accountAddress);</span>
+        }
+        else {
+<span class="pc bpc" id="L21" title="1 of 3 branches missed.">            switch (type) {</span>
+                case guest:
+<span class="fc" id="L23">                    return createGuestCustomer(id, firstName, lastName, type, email, accountAddress);</span>
+                case registered:
+<span class="fc" id="L25">                    return createRegisteredCustomer(id, firstName, lastName, type, email, accountAddress);  </span>
+                default: 
+<span class="nc" id="L27">                    System.out.println(&quot;Not a valid customer type&quot;);   </span>
+<span class="nc" id="L28">                    throw new IllegalArgumentException();</span>
+            }
+        }       
+    }
+    private static Customer createStandardCustomer(String id, String firstName, String lastName, CustomerType type, String email, String accountAddress) {
+        //easy ability to add customizations for standard customers
+<span class="nc" id="L34">        Customer standardCustomer = new Customer(id, firstName, lastName, type, email, accountAddress);</span>
+
+<span class="nc" id="L36">        return standardCustomer;</span>
+    }
+    private static Customer createGuestCustomer(String id, String firstName, String lastName, CustomerType type, String email, String accountAddress) {
+        //easy ability to add customizations for guest customers
+<span class="fc" id="L40">        Customer guestCustomer = new Customer(id, firstName, lastName, type, email, accountAddress);</span>
+
+<span class="fc" id="L42">        return guestCustomer;</span>
+    }
+
+    private static Customer createRegisteredCustomer(String id, String firstName, String lastName, CustomerType type, String email, String accountAddress) {
+        //easy ability to add customizations for registered customers
+<span class="fc" id="L47">        Customer registeredCustomer = new Customer(id, firstName, lastName, type, email, accountAddress);</span>
+        
+<span class="fc" id="L49">        return registeredCustomer;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
